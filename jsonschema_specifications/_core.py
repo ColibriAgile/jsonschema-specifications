@@ -30,8 +30,8 @@ def _schemas():
 
     frozen = '.zip' in __file__.lower()
     if frozen:
-        ref = os.path.normpath(os.path.join(os.path.dirname(sys.executable), 'lib'))
-        cam = os.path.join(ref, r'\site-packages\jsonschema_specifications\schemas')
+        ref = os.path.dirname(__file__.lower().split('.zip')[0])
+        cam = os.path.join(ref, r'jsonschema_specifications\schemas')
         for subdir in os.listdir(cam):
             if '.' not in subdir:
                 path = os.path.join(cam, subdir, 'metaschema.json')
