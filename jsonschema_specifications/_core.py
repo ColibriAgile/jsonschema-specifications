@@ -3,6 +3,8 @@ Load all the JSON Schema specification's official schemas.
 """
 
 import json
+import os
+import sys
 
 try:
     from importlib.resources import files
@@ -25,6 +27,18 @@ def _schemas():
     #
     # So this takes some liberties given the real layout of what we ship
     # (only 2 levels of nesting, no directories within the second level).
+
+    frozen = '.zip' in __file__.lower()
+    if frozen:
+        ref = os.path.normpath(os.path.join(os.path.dirname(sys.executable), 'lib'))
+        cam = os.path.join(ref, r'\site-packages\jsonschema_specifications\schemas')
+        for subdir in os.listdir(cam):
+            if '.' not in subdir:
+                path = os.path.join(cam, subdir, 'metaschema.json')
+                with open(path, encoding='utf-8') as json_file:
+                    contents = json.load(json_file)
+                yield Resource.from_contents(contents)
+        return
 
     for version in files(__package__).joinpath("schemas").iterdir():
         if version.name.startswith("."):
